@@ -30,11 +30,25 @@ const Login = ({ navigation }) => {
   } = useForm({ defaultValues: { email: "", password: "" } });
 
   const [rememberMe, setRememberMe] = useState(false);
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
+ 
   useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const token = await AsyncStorage.getItem("userToken");
+        const remember = await AsyncStorage.getItem("rememberMe");
+        if (token && remember === "true") {
+          navigation.replace("SelectSport");
+        }
+      } catch (error) {
+        console.log("Auto login error:", error);
+      }
+    };
+
+    checkLogin();
+
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
@@ -49,15 +63,18 @@ const Login = ({ navigation }) => {
       }),
     ]).start();
   }, []);
-
+ 
   const onSubmit = async (data) => {
     const { email, password } = data;
     try {
       const res = await loginUser({ identifier: email, password });
 
-      // Store token & user info in AsyncStorage
+      // Save token & user info
       await AsyncStorage.setItem("userToken", res.jwt);
       await AsyncStorage.setItem("userInfo", JSON.stringify(res.user));
+
+      //  Save Remember Me preference
+      await AsyncStorage.setItem("rememberMe", rememberMe ? "true" : "false");
 
       Alert.alert("Success", "Login successful!");
       navigation.replace("SelectSport");
@@ -68,8 +85,7 @@ const Login = ({ navigation }) => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem("userToken");
-      await AsyncStorage.removeItem("userInfo");
+      await AsyncStorage.multiRemove(["userToken", "userInfo", "rememberMe"]);
       Alert.alert("Logged out!");
       navigation.replace("Login");
     } catch (error) {
@@ -104,6 +120,7 @@ const Login = ({ navigation }) => {
             Log in to explore about our app
           </Text>
 
+          {/* Email Input */}
           <Controller
             control={control}
             name="email"
@@ -125,6 +142,7 @@ const Login = ({ navigation }) => {
             <Text style={styles.errorText}>{errors.email.message}</Text>
           )}
 
+          {/* Password Input */}
           <Controller
             control={control}
             name="password"
@@ -146,6 +164,7 @@ const Login = ({ navigation }) => {
             <Text style={styles.errorText}>{errors.password.message}</Text>
           )}
 
+          {/*  Remember Me Section */}
           <View style={styles.rememberContainer}>
             <View style={styles.checkboxRow}>
               <Checkbox.Android
@@ -190,7 +209,6 @@ const Login = ({ navigation }) => {
   );
 };
 
-// Keep your styles same as before
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -218,7 +236,6 @@ const styles = StyleSheet.create({
     zIndex: 0,
     opacity: 1.25,
   },
-  content: { flex: 1, justifyContent: "center" },
   logo: { resizeMode: "contain", alignSelf: "center" },
   title: {
     fontSize: 24,

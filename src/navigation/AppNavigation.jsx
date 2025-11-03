@@ -16,6 +16,7 @@ import FinalScoor from "../screens/FinalScoor";
 import TeamManagementScreen from "../screens/TeamManagementScreen";
 import EditTeamScreen from "../screens/EditTeamScreen";
 import MatchHistoryScreen from "../screens/MatchHistoryScreen";
+import ProfileScreen from "../screens/profileScreen/ProfileScreen";
 
  
 const Stack = createStackNavigator();
@@ -39,6 +40,7 @@ const AppNavigation = () => {
         <Stack.Screen name="TeamManagementScreen" component={TeamManagementScreen}/>
         <Stack.Screen name="EditTeamScreen" component={EditTeamScreen} />
         <Stack.Screen name="MatchHistory" component={MatchHistoryScreen} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

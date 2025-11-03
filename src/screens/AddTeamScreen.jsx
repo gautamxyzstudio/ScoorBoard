@@ -61,24 +61,36 @@ const AddTeamScreen = ({ navigation }) => {
 
       if (teamLogo) {
         // iOS and Android compatible file object
-        console.log("teamLogo", teamLogo.file);
-        const localUri = teamLogo.uri;
-        const filename = localUri.split("/").pop();
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : "image";
+        // console.log("teamLogo", teamLogo.file);
+        // const localUri = teamLogo.uri;
+        // const filename = localUri.split("/").pop();
+        // const match = /\.(\w+)$/.exec(filename);
+        // const type = match ? `image/${match[1]}` : "image";
 
-        const fileToUpload = {
-          uri: localUri,
-          name: filename,
-          type,
-        };
+        // const fileToUpload = {
+        //   uri: localUri,
+        //   name: filename,
+        //   type,
+        // };
 
-        console.log("fileToUpload", fileToUpload);
+        let file;
 
-        const uploadRes = await uploadLogo(
-          Platform.OS === "ios" ? fileToUpload : teamLogo.file,
-          storedUserToken
-        );
+        if (Platform.OS === "web" && teamLogo?.file) {
+          file = teamLogo.file;
+        } else {
+          const localUri = teamLogo?.uri;
+          const filename =
+            teamLogo?.fileName || localUri?.split("/").pop() || "cover-art.jpg";
+          const type = teamLogo?.mimeType || "image/jpeg";
+
+          file = { uri: localUri, name: filename, type };
+
+        }
+
+        console.log("fileToUpload", file);
+        console.log(storedUserToken,"token")
+
+        const uploadRes = await uploadLogo(file, storedUserToken);
         console.log(uploadRes?.[0].id, "Resp");
 
         const createdTeam = await createTeam({
@@ -265,8 +277,7 @@ const styles = StyleSheet.create({
     height: 24,
     position: "absolute",
     bottom: 12,
-    right: 3
-    ,
+    right: 3,
   },
 });
 

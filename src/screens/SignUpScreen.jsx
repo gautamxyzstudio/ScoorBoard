@@ -57,7 +57,8 @@ const SignUpScreen = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
     >
       <ScrollView
         contentContainerStyle={styles.container}
@@ -65,7 +66,6 @@ const SignUpScreen = ({ navigation }) => {
       >
         <Image source={backgroundLogo} style={styles.backgroundTop} />
         <Image source={blueImg} style={styles.logo} />
-
         <Text style={styles.title}>SportSynz</Text>
         <Text style={styles.heading}>Sign Up</Text>
 
@@ -111,7 +111,7 @@ const SignUpScreen = ({ navigation }) => {
               label="Email"
               value={field.value}
               onChangeText={field.onChange}
-              onBlur={field.onBlur} 
+              onBlur={field.onBlur}
               keyboardType="email-address"
             />
           )}
@@ -183,7 +183,7 @@ const SignUpScreen = ({ navigation }) => {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <TouchableOpacity onPress={() => navigation.navigate("LoginPage")}>
             <Text style={styles.link}> Login</Text>
           </TouchableOpacity>
         </View>
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     width: "50%",
     height: "100%",
     resizeMode: "contain",
-    zIndex: 1,
+    zIndex: 0,
     opacity: 1,
   },
   backgroundBottom: {
@@ -214,14 +214,16 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "contain",
     transform: [{ rotate: "176deg" }],
-    zIndex: 1,
+    zIndex: 0,
     opacity: 1,
+    pointerEvents: "none",
   },
   container: {
     flexGrow: 1,
     backgroundColor: Colors.background,
     padding: 20,
     justifyContent: "center",
+    zIndex: 2,
   },
   logo: { resizeMode: "contain", alignSelf: "center" },
   title: {

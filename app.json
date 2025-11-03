@@ -22,6 +22,7 @@
       "bundleIdentifier": "com.amitexpo1021.myapp"
     },
     "android": {
+      "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "permissions": [
           "INTERNET",
@@ -41,15 +42,13 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
+
       "package": "com.amitexpo1021.myapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": [
-      "expo-font",
-      "expo-image-picker"
-    ],
+    "plugins": ["expo-font", "expo-image-picker"],
     "extra": {
       "eas": {
         "projectId": "d89df8bc-e8e5-419b-9135-7ccf83a64cee"

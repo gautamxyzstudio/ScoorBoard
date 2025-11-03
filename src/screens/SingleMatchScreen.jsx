@@ -58,18 +58,24 @@ const SingleMatchScreen = ({ navigation }) => {
 
   // Logo URL builder
   const getTeamLogo = (team) => {
-    if (!team?.logo) return null;
+    if (!team?.logo)
+      return null;
+    console.log("No logo found for team:", team?.logo);
     const base = process.env.EXPO_PUBLIC_API_URL;
     const logoData = team.logo;
+    console.log(`${base}${logoData.formats.thumbnail.url}`,"base url")
     if (logoData?.formats?.thumbnail?.url)
       return `${base}${logoData.formats.thumbnail.url}`;
     if (logoData?.formats?.small?.url)
       return `${base}${logoData.formats.small.url}`;
+
     return `${base}${logoData.url}`;
+    //  console.log("Team:", team?.name, "| Logo URL:", logoUrl);
   };
 
   const teamALogo = getTeamLogo(teamA);
   const teamBLogo = getTeamLogo(teamB);
+  // console.log(teamBLogo,"teamB")
 
   // Handle Start Match
   const handleStartMatch = async () => {
@@ -259,7 +265,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
+    alignItems: "center", 
     paddingTop: 80,
     padding: 20,
   },
@@ -272,7 +278,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#F7F7F7",
-    width: "99%",
+    width: "100%",
     padding: 15,
     borderRadius: 12,
     marginBottom: 20,
@@ -297,7 +303,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "95%",
-    marginTop: 288,
+    marginTop: 260,
   },
   vsWrapper: {
     alignItems: "center",

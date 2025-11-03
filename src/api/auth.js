@@ -73,6 +73,9 @@ export const getTeamsDetails = async (teamId, userToken) => {
 // Upload Logo
 export const uploadLogo = async (file, userToken) => {
   console.log("Selected file:", file);
+  
+        console.log("fileToUpload", file);
+        console.log(userToken,"token")
 
   try {
     const formData = new FormData();
@@ -80,6 +83,7 @@ export const uploadLogo = async (file, userToken) => {
     const response = await axios.post(ENDPOINTS.UPLOAD_LOGO, formData, {
       headers: {
         Authorization: `Bearer ${userToken}`,
+        "Content-Type": "multipart/form-data",
       },
     });
     return response.data;
@@ -212,7 +216,7 @@ export const getCompletedMatches = async (token) => {
   try {
     const response = await axios.get(ENDPOINTS.GET_COMPLETED_MATCHES, {
       headers: {
-        Authorization: `Bearer ${token}`,  
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -228,4 +232,4 @@ export const getCompletedMatches = async (token) => {
       error.response?.data || { message: "Failed to fetch completed matches" }
     );
   }
-};  
+};

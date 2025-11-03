@@ -38,7 +38,7 @@ const EditTeamScreen = ({ navigation, route }) => {
         if (teamId) {
           const token = await AsyncStorage.getItem("userToken");
           const teamDetails = await getTeamsDetails(teamId, token);
-          console.log("Team Details Data: ", teamDetails);
+          // console.log("Team Details Data: ", teamDetails);
 
           if (teamDetails) {
             setTeamName(teamDetails?.name || "");
@@ -62,7 +62,7 @@ const EditTeamScreen = ({ navigation, route }) => {
 
             setTeamLogo(fullLogoUrl ? { uri: fullLogoUrl } : null);
             setOriginalLogoUrl(fullLogoUrl || "");
-            console.log("Team Logo URL:", fullLogoUrl);
+            // console.log("Team Logo URL:", fullLogoUrl);
           }
         }
       } catch (error) {
@@ -114,7 +114,7 @@ const EditTeamScreen = ({ navigation, route }) => {
       const isLogoChanged = teamLogo?.uri && teamLogo.uri !== originalLogoUrl;
 
       if (isLogoChanged) {
-        console.log(" Uploading new logo...");
+        // console.log(" Uploading new logo...");
 
         const localUri = teamLogo.uri;
         const filename = localUri.split("/").pop();

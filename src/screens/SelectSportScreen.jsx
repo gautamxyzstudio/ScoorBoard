@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Colors from "../contants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const sportsData = [
   { id: 1, name: "Hockey", image: require("../../assets/hockey.png") },
@@ -20,37 +21,39 @@ const SelectSportScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.progressContainer}>
-        <View style={styles.progressActive} />
-        <View style={styles.progressInactive} />
-      </View>
+    <SafeAreaView style={{flex:1}}>
+      <View style={styles.container}>
+        <View style={styles.progressContainer}>
+          <View style={styles.progressActive} />
+          <View style={styles.progressInactive} />
+        </View>
 
-      <Text style={styles.heading}>Select your are Sport*</Text>
+        <Text style={styles.heading}>Select your are Sport*</Text>
 
-      <View style={styles.grid}>
-        {sportsData.map((sport) => (
-          <TouchableOpacity
-            key={sport.id}
-            style={[
-              styles.card,
-              selectedSport === sport.id && styles.selectedCard,
-            ]}
-            onPress={() => setSelectedSport(sport.id)}
-          >
-            <Image source={sport.image} style={styles.image} />
-            <Text style={styles.sportName}>{sport.name}</Text>
+        <View style={styles.grid}>
+          {sportsData.map((sport) => (
+            <TouchableOpacity
+              key={sport.id}
+              style={[
+                styles.card,
+                selectedSport === sport.id && styles.selectedCard,
+              ]}
+              onPress={() => setSelectedSport(sport.id)}
+            >
+              <Image source={sport.image} style={styles.image} />
+              <Text style={styles.sportName}>{sport.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <View style={styles.footer}>
+          <Text style={styles.pageText}>1/2</Text>
+          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+            <Text style={styles.arrow}>→</Text>
           </TouchableOpacity>
-        ))}
+        </View>
       </View>
-
-      <View style={styles.footer}>
-        <Text style={styles.pageText}>1/2</Text>
-        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-          <Text style={styles.arrow}>→</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -59,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingTop: 120,
+    paddingTop: 40,
   },
   progressContainer: {
     flexDirection: "row",
@@ -93,11 +96,11 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "center",
     gap: 10,
   },
   card: {
-    width: "48%",
+    width: "42%",
     height: 140,
     borderWidth: 1,
     borderColor: "#ddd",

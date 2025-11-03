@@ -2,7 +2,7 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
-import Colors from "../contants/Colors";
+// import Colors from "../contants/Colors";
 
 const GradientButton = ({ title, onPress, style, type = "primary" }) => {
   if (type === "primary") {
