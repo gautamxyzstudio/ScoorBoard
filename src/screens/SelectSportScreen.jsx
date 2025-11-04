@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Colors from "../contants/Colors";
-import { SafeAreaView } from "react-native-safe-area-context";
-
+ 
 const sportsData = [
   { id: 1, name: "Hockey", image: require("../../assets/hockey.png") },
   { id: 2, name: "Cricket", image: require("../../assets/Cricket.png") },
@@ -21,7 +20,7 @@ const SelectSportScreen = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style={{flex:1}}>
+    // <SafeAreaView style={{flex:1}}>
       <View style={styles.container}>
         <View style={styles.progressContainer}>
           <View style={styles.progressActive} />
@@ -53,7 +52,7 @@ const SelectSportScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 
@@ -62,7 +61,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingTop: 40,
+    paddingTop: 80,
   },
   progressContainer: {
     flexDirection: "row",
@@ -126,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   footer: {
-    marginTop: 220,
+    marginTop: 260,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

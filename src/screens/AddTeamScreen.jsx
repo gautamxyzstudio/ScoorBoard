@@ -60,18 +60,7 @@ const AddTeamScreen = ({ navigation }) => {
       const storedUserToken = await AsyncStorage.getItem("userToken");
 
       if (teamLogo) {
-        // iOS and Android compatible file object
-        // console.log("teamLogo", teamLogo.file);
-        // const localUri = teamLogo.uri;
-        // const filename = localUri.split("/").pop();
-        // const match = /\.(\w+)$/.exec(filename);
-        // const type = match ? `image/${match[1]}` : "image";
-
-        // const fileToUpload = {
-        //   uri: localUri,
-        //   name: filename,
-        //   type,
-        // };
+      
 
         let file;
 

@@ -140,9 +140,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 15,
-    // borderBottomWidth: 1,
-    // borderColor: "#f0f0f0",
+    paddingVertical: 15, 
   },
   menuLeft: {
     flexDirection: "row",

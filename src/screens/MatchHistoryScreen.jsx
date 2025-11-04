@@ -85,19 +85,19 @@ const MatchHistoryScreen = ({ navigation }) => {
 
     const matchType =
       item.match_type || item.type || item.category || "Friendly Match";
- 
+
     const unit = "goals";
 
     //  Winner logic
     let winnerText = "";
     if (teamAScore === teamBScore) {
-      winnerText = "🤝 Match Drawn";
+      winnerText = " Match Drawn";
     } else if (teamAScore > teamBScore) {
       const margin = teamAScore - teamBScore;
-      winnerText = `🏆 Won ${teamAName} by ${margin} ${unit}`;
+      winnerText = ` Won ${teamAName} by ${margin} ${unit}`;
     } else {
       const margin = teamBScore - teamAScore;
-      winnerText = `🏆 Won ${teamBName} by ${margin} ${unit}`;
+      winnerText = ` Won ${teamBName} by ${margin} ${unit}`;
     }
 
     return (

@@ -117,7 +117,7 @@ const EnterScreen = ({ navigation }) => {
         >
           <Image source={bluevector} style={styles.logo} />
           <Text style={styles.title}>SportSynz</Text>
-
+          
           <Text style={styles.inputLabel}>Enter ID</Text>
           <CustomInput value={email} onChangeText={setEmail} />
 

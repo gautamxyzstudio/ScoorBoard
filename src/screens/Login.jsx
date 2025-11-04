@@ -69,11 +69,10 @@ const Login = ({ navigation }) => {
     try {
       const res = await loginUser({ identifier: email, password });
 
-      // Save token & user info
+    
       await AsyncStorage.setItem("userToken", res.jwt);
       await AsyncStorage.setItem("userInfo", JSON.stringify(res.user));
-
-      //  Save Remember Me preference
+ 
       await AsyncStorage.setItem("rememberMe", rememberMe ? "true" : "false");
 
       Alert.alert("Success", "Login successful!");
@@ -223,7 +222,7 @@ const styles = StyleSheet.create({
     width: "49%",
     height: "100%",
     resizeMode: "contain",
-    zIndex: 2,
+    zIndex: 0,
     opacity: 1.25,
   },
   backgroundImg: {

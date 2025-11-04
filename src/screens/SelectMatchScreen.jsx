@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   progressActive: {
     height: 4,
-    width: 170,
+    width: 150,
     backgroundColor: "#3F8CFF",
     borderRadius: 5,
     marginHorizontal: 5,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: "auto",
-    marginBottom: 20,
+    marginBottom: 50,
   },
   pageText: {
     fontSize: 24,

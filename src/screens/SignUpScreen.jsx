@@ -194,7 +194,7 @@ const SignUpScreen = ({ navigation }) => {
   );
 };
 
-// Styles remain same
+ 
 const styles = StyleSheet.create({
   backgroundTop: {
     position: "absolute",

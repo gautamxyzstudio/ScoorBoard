@@ -1,9 +1,10 @@
 {
   "expo": {
-    "name": "my-app",
+    "name": "ScoorBoard Mobile App",
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
+  
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -46,7 +47,7 @@
       "package": "com.amitexpo1021.myapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/sideLogo.png"
     },
     "plugins": ["expo-font", "expo-image-picker"],
     "extra": {

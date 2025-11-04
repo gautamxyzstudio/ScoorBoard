@@ -58,19 +58,17 @@ const SingleMatchScreen = ({ navigation }) => {
 
   // Logo URL builder
   const getTeamLogo = (team) => {
-    if (!team?.logo)
-      return null;
+    if (!team?.logo) return null;
     console.log("No logo found for team:", team?.logo);
     const base = process.env.EXPO_PUBLIC_API_URL;
     const logoData = team.logo;
-    console.log(`${base}${logoData.formats.thumbnail.url}`,"base url")
+    console.log(`${base}${logoData.formats.thumbnail.url}`, "base url");
     if (logoData?.formats?.thumbnail?.url)
       return `${base}${logoData.formats.thumbnail.url}`;
     if (logoData?.formats?.small?.url)
       return `${base}${logoData.formats.small.url}`;
 
     return `${base}${logoData.url}`;
-    //  console.log("Team:", team?.name, "| Logo URL:", logoUrl);
   };
 
   const teamALogo = getTeamLogo(teamA);
@@ -265,14 +263,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center", 
+    alignItems: "center",
     paddingTop: 80,
     padding: 20,
   },
-  manage: { fontSize: 16, color: "#068EFF", fontWeight: "700", marginTop: 10 },
+  manage: { fontSize: 16, color: "#068EFF", fontWeight: "700" },
   backButton: { position: "absolute", top: 60, left: 20 },
   backIcon: { width: 24, height: 24 },
-  title: { fontSize: 22, fontWeight: "700", marginBottom: 16, marginTop: 20 },
+  title: { fontSize: 22, fontWeight: "700", marginBottom: 16, marginTop: 0 },
   teamBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -286,9 +284,9 @@ const styles = StyleSheet.create({
   },
   teamInfo: { flexDirection: "row", alignItems: "center" },
   teamLogo: { width: 50, height: 50, borderRadius: 25, marginRight: 15 },
-  teamName: { fontSize: 18, fontWeight: "600" },
+  teamName: { fontSize: 20, fontWeight: "600" },
   teamSub: { fontSize: 14, color: "#777" },
-  gradientBtn: { flex: 1, marginRight: 10 },
+  gradientBtn: { flex: 1 },
   newTeamButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -303,7 +301,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "95%",
-    marginTop: 260,
+    marginTop: 320,
+    gap: 10,
   },
   vsWrapper: {
     alignItems: "center",
