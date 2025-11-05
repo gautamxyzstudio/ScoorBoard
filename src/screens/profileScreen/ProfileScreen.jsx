@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export default function ProfileScreen({ navigation }) {
   const handleLogout = async () => {
     await AsyncStorage.clear();
-    navigation.replace("Login");
+    navigation.replace("LoginPage");
   };
 
   const menuItems = [
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F5F5F5",
     borderRadius: 10,
     paddingVertical: 14,
+    marginTop:191,
   },
   logoutText: {
     fontSize: 16,

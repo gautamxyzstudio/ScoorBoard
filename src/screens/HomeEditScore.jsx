@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   Linking,
+  ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
@@ -54,7 +55,7 @@ const HomeEditScore = ({ navigation, route }) => {
         scoreB: newAwayScore,
       };
 
-      setLoading(true);
+      // setLoading(true);
       const res = await updateScore(match?.match?.id, payload, token);
       setLoading(false);
       console.log("API response:", res);
@@ -63,14 +64,16 @@ const HomeEditScore = ({ navigation, route }) => {
       setLoading(false);
     }
   };
-
+ 
   const handleEndMatch = async () => {
     try {
+      setLoading(true);  
       const token = await AsyncStorage.getItem("userToken");
       const matchId = match?.match?.id;
 
       if (!matchId) {
         Alert.alert("Error", "Match ID not found");
+        setLoading(false);
         return;
       }
 
@@ -81,6 +84,8 @@ const HomeEditScore = ({ navigation, route }) => {
     } catch (error) {
       console.log("End Match Error:", error);
       Alert.alert("Error", error?.message || "Failed to end match");
+    } finally {
+      setLoading(false);  
     }
   };
 
@@ -108,10 +113,9 @@ const HomeEditScore = ({ navigation, route }) => {
     await handleUpdateScore(homeScore, newScore);
   };
 
-  // Bottom Sheet Share Actions
   const handleShareOption = async (type) => {
     const matchCode = match?.match?.match_code || "Unknown";
-    const message = `🏏 Match Details 🏆\nMatch ID: ${matchCode}\n${teamA?.name || "Team A"} vs ${teamB?.name || "Team B"}\n\nCheck live: https://scoreboard.xyzdemowebsites.com/match/${matchCode}`;
+    const message = ` Match Details \nMatch ID: ${matchCode}\n${teamA?.name || "Team A"} vs ${teamB?.name || "Team B"}\n\nCheck live: https://scoreboard.xyzdemowebsites.com/match/${matchCode}`;
 
     if (type === "whatsapp") {
       const url = `whatsapp://send?text=${encodeURIComponent(message)}`;
@@ -181,7 +185,6 @@ const HomeEditScore = ({ navigation, route }) => {
           </View>
 
           <View style={styles.scoreControl}>
-            {/* minus button with logic */}
             <TouchableOpacity
               style={[
                 styles.scoreButton,
@@ -207,7 +210,6 @@ const HomeEditScore = ({ navigation, route }) => {
           </View>
         </View>
 
-        {/* VS */}
         <GradientText
           text="Vs"
           style={{ fontSize: 30, fontWeight: "700", marginVertical: 25 }}
@@ -227,7 +229,6 @@ const HomeEditScore = ({ navigation, route }) => {
           </View>
 
           <View style={styles.scoreControl}>
-            {/* minus button with logic */}
             <TouchableOpacity
               style={[
                 styles.scoreButton,
@@ -260,6 +261,7 @@ const HomeEditScore = ({ navigation, route }) => {
           title="Over The Match"
           onPress={handleEndMatch}
           type="secondary"
+          disabled={loading}
         />
       </View>
 
@@ -304,6 +306,14 @@ const HomeEditScore = ({ navigation, route }) => {
           </TouchableOpacity>
         </View>
       </Modal>
+
+ 
+      {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#fff" />
+          <Text style={styles.loaderText}>Ending match...</Text>
+        </View>
+      )}
     </View>
   );
 };
@@ -368,7 +378,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     marginTop: 15,
   },
-  // scoreButton: { padding: 8 },
   scoreButton: {
     padding: 8,
     shadowColor: "rgba(0,0,0,0.12)",
@@ -415,6 +424,19 @@ const styles = StyleSheet.create({
   cancelText: {
     color: "#FF4444",
     fontSize: 16,
+    fontWeight: "600",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
+  loaderText: {
+    color: "#fff",
+    fontSize: 16,
+    marginTop: 10,
     fontWeight: "600",
   },
 });

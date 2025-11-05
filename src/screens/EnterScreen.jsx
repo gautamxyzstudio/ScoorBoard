@@ -5,10 +5,12 @@ import {
   StyleSheet,
   Animated,
   Image,
-  ScrollView,
-  KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import {
+  KeyboardAwareScrollView,
+  KeyboardToolbar,
+} from "react-native-keyboard-controller";  
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
 import Colors from "../contants/Colors";
@@ -69,7 +71,7 @@ const EnterScreen = ({ navigation }) => {
       fadeAnim.setValue(0);
       scaleAnim.setValue(0.8);
       slideAnim.setValue(50);
-      // optional: re-animate when coming back
+
       Animated.parallel([
         Animated.spring(scaleAnim, {
           toValue: 1,
@@ -92,32 +94,28 @@ const EnterScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView
+    <>
+      <KeyboardAwareScrollView
+        bottomOffset={62}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
+        {/*  Background Images (static) */}
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
           <Image source={backgroundLogo} style={styles.backgroundTop} />
           <Image source={backgroundImg} style={styles.backgroundBottom} />
         </View>
 
-        {/* Animated Container */}
+        {/*  Animated Main Content */}
         <Animated.View
           style={{
             opacity: fadeAnim,
-            transform: [
-              { translateY: slideAnim },
-              { scale: scaleAnim },
-            ],
+            transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
           }}
         >
           <Image source={bluevector} style={styles.logo} />
           <Text style={styles.title}>SportSynz</Text>
-          
+
           <Text style={styles.inputLabel}>Enter ID</Text>
           <CustomInput value={email} onChangeText={setEmail} />
 
@@ -136,8 +134,11 @@ const EnterScreen = ({ navigation }) => {
             />
           </View>
         </Animated.View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+
+      {/* Toolbar under Keyboard */}
+      <KeyboardToolbar />
+    </>
   );
 };
 
@@ -151,7 +152,7 @@ const styles = StyleSheet.create({
   backgroundTop: {
     position: "absolute",
     top: -250,
-    left: 210,
+    left: 193,
     width: "50%",
     height: "100%",
     resizeMode: "contain",

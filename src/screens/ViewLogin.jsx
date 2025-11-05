@@ -5,9 +5,6 @@ import {
   StyleSheet,
   Alert,
   Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
 } from "react-native";
 import CustomInput from "../components/CustomInput";
@@ -18,10 +15,17 @@ import backgroundLogo from "../../assets/Vectorbg.png";
 import backgroundImg from "../../assets/Vectorbg.png";
 import { getMatchByCode } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const ViewLogin = ({ navigation }) => {
   const [matchCode, setMatchCode] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const handleCodeChange = (text) => {
+    const cleanText = text.replace(/-/g, "");
+    const formatted = cleanText.match(/.{1,3}/g)?.join("-") || "";
+    setMatchCode(formatted);
+  };
 
   const handleGetMatch = async () => {
     if (!matchCode.trim()) {
@@ -33,7 +37,6 @@ const ViewLogin = ({ navigation }) => {
       setLoading(true);
       const token = await AsyncStorage.getItem("token");
       const matchData = await getMatchByCode(matchCode, token);
-      // console.log("Match data:", matchData);
 
       if (!matchData) {
         Alert.alert("Not Found", "No match found for this code!");
@@ -50,45 +53,45 @@ const ViewLogin = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <ScrollView
+    <>
+      <KeyboardAwareScrollView
+        bottomOffset={62}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
+        {/* Background */}
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
           <Image source={backgroundLogo} style={styles.backgroundTop} />
           <Image source={backgroundImg} style={styles.backgroundBottom} />
         </View>
 
+        {/* Logo */}
         <Image source={bluevector} style={styles.logo} />
         <Text style={styles.title}>SportSynz</Text>
 
+        {/* Input */}
         <Text style={styles.inputLabel}>Enter Match Code</Text>
         <CustomInput
           value={matchCode}
-          onChangeText={setMatchCode}
+          onChangeText={handleCodeChange}
           placeholder="Enter match code"
+          maxLength={11}
         />
 
         <GradientButton
           onPress={handleGetMatch}
-          title={loading ? "Loading..." : "View Match"}
+          title="View Match"
           style={styles.secondLast}
           disabled={loading}
         />
+      </KeyboardAwareScrollView>
 
-        {/* {loading && (
-          <ActivityIndicator
-            size="large"
-            color={Colors.primary}
-            style={{ marginTop: 20 }}
-          />
-        )} */}
-      </ScrollView>
-    </KeyboardAvoidingView>
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color={Colors.primary} />
+        </View>
+      )}
+    </>
   );
 };
 
@@ -136,6 +139,13 @@ const styles = StyleSheet.create({
   },
   secondLast: {
     marginTop: 32,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
   },
 });
 

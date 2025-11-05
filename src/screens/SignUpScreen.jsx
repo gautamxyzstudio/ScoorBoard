@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -6,11 +6,13 @@ import {
   TouchableOpacity,
   Alert,
   Image,
-  ScrollView,
-  KeyboardAvoidingView,
-  Platform,
+  ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
+import {
+  KeyboardAwareScrollView,
+  KeyboardToolbar,
+} from "react-native-keyboard-controller";
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
 import Colors from "../contants/Colors";
@@ -21,6 +23,8 @@ import backgroundImg from "../../assets/Vectorbg.png";
 import { registerUser, checkEmailExists } from "../api/auth";
 
 const SignUpScreen = ({ navigation }) => {
+  const [loading, setLoading] = useState(false); // 🔥 Loading state add kiya
+
   const {
     control,
     handleSubmit,
@@ -37,6 +41,7 @@ const SignUpScreen = ({ navigation }) => {
   });
 
   const onSubmit = async (data) => {
+    setLoading(true); // 🔥 Start loader
     try {
       const res = await registerUser({
         username: data.email,
@@ -51,20 +56,21 @@ const SignUpScreen = ({ navigation }) => {
     } catch (error) {
       console.log("Signup Error:", error);
       Alert.alert("Error", error.message || "Signup failed!");
+    } finally {
+      setLoading(false); // 🔥 Stop loader
     }
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
-    >
-      <ScrollView
+    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+      <Image source={backgroundLogo} style={styles.backgroundTop} />
+      <Image source={backgroundImg} style={styles.backgroundBottom} />
+
+      <KeyboardAwareScrollView
+        bottomOffset={62}
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-        <Image source={backgroundLogo} style={styles.backgroundTop} />
         <Image source={blueImg} style={styles.logo} />
         <Text style={styles.title}>SportSynz</Text>
         <Text style={styles.heading}>Sign Up</Text>
@@ -80,6 +86,7 @@ const SignUpScreen = ({ navigation }) => {
               value={value}
               onChangeText={onChange}
               keyboardType="fullName"
+              editable={!loading} // 🔥 disable while loading
             />
           )}
         />
@@ -113,6 +120,7 @@ const SignUpScreen = ({ navigation }) => {
               onChangeText={field.onChange}
               onBlur={field.onBlur}
               keyboardType="email-address"
+              editable={!loading} // 🔥 disable while loading
             />
           )}
         />
@@ -131,6 +139,7 @@ const SignUpScreen = ({ navigation }) => {
               value={value}
               onChangeText={onChange}
               keyboardType="phone-pad"
+              editable={!loading} // 🔥 disable while loading
             />
           )}
         />
@@ -153,6 +162,7 @@ const SignUpScreen = ({ navigation }) => {
               onChangeText={onChange}
               secureTextEntry
               showPasswordToggle
+              editable={!loading} // 🔥 disable while loading
             />
           )}
         />
@@ -160,70 +170,76 @@ const SignUpScreen = ({ navigation }) => {
           <Text style={styles.errorText}>{errors.password.message}</Text>
         )}
 
-        {/* Sign Up Button */}
         <GradientButton
-          title="Sign Up"
-          onPress={handleSubmit(onSubmit)}
+          title={loading ? "Creating..." : "Sign Up"} // 🔥 show text
+          onPress={!loading ? handleSubmit(onSubmit) : null} // 🔥 disable tap
           style={styles.signUpButton}
+          disabled={loading}
         />
 
-        {/* Divider */}
         <View style={styles.dividerContainer}>
           <View style={styles.line} />
           <Text style={styles.orText}>Or Sign Up with</Text>
           <View style={styles.line} />
         </View>
 
-        {/* Google Sign Up */}
-        <TouchableOpacity style={styles.googleButton}>
+        <TouchableOpacity
+          style={[styles.googleButton, loading && { opacity: 0.5 }]}
+          disabled={loading} // 🔥 disable tap
+        >
           <Image source={GoogleIcon} style={styles.googleIcon} />
           <Text style={styles.googleText}>Continue with Google</Text>
         </TouchableOpacity>
 
-        {/* Footer */}
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigation.navigate("LoginPage")}>
+          <TouchableOpacity
+            onPress={() => !loading && navigation.navigate("LoginPage")} // 🔥 disable tap
+            disabled={loading}
+          >
             <Text style={styles.link}> Login</Text>
           </TouchableOpacity>
         </View>
+      </KeyboardAwareScrollView>
 
-        <Image source={backgroundImg} style={styles.backgroundBottom} />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <KeyboardToolbar />
+
+      {/* 🔥 Full-screen loader overlay */}
+      {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      )}
+    </View>
   );
 };
 
- 
 const styles = StyleSheet.create({
   backgroundTop: {
     position: "absolute",
-    top: -231,
-    left: 215,
-    width: "50%",
-    height: "100%",
+    top: -50,
+    right: 0,
+    width: "40%",
+    height: "50%",
     resizeMode: "contain",
-    zIndex: 0,
     opacity: 1,
+    zIndex: 0,
   },
   backgroundBottom: {
     position: "absolute",
-    top: 320,
+    bottom: -120,
     left: 0,
     width: "50%",
-    height: "100%",
+    height: "50%",
     resizeMode: "contain",
-    transform: [{ rotate: "176deg" }],
-    zIndex: 0,
+    transform: [{ rotate: "180deg" }],
     opacity: 1,
-    pointerEvents: "none",
+    zIndex: 0,
   },
   container: {
     flexGrow: 1,
-    backgroundColor: Colors.background,
     padding: 20,
     justifyContent: "center",
-    zIndex: 2,
   },
   logo: { resizeMode: "contain", alignSelf: "center" },
   title: {
@@ -259,7 +275,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   googleButton: {
-    zIndex: 2,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -275,6 +290,13 @@ const styles = StyleSheet.create({
   footerText: { color: Colors.gray },
   link: { color: Colors.primary, fontWeight: "600" },
   errorText: { color: "red", fontSize: 12, marginBottom: 5, marginLeft: 5 },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
 });
 
 export default SignUpScreen;

@@ -6,8 +6,6 @@ import {
   TouchableOpacity,
   Image,
   Modal,
-  ScrollView,
-  KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
 } from "react-native";
@@ -21,6 +19,7 @@ import backIcon from "../../assets/backIcon.png";
 import { createTeam, uploadLogo } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import tick from "../../assets/tick.png";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const AddTeamScreen = ({ navigation }) => {
   const [teamName, setTeamName] = useState("");
@@ -60,8 +59,6 @@ const AddTeamScreen = ({ navigation }) => {
       const storedUserToken = await AsyncStorage.getItem("userToken");
 
       if (teamLogo) {
-      
-
         let file;
 
         if (Platform.OS === "web" && teamLogo?.file) {
@@ -73,11 +70,10 @@ const AddTeamScreen = ({ navigation }) => {
           const type = teamLogo?.mimeType || "image/jpeg";
 
           file = { uri: localUri, name: filename, type };
-
         }
 
         console.log("fileToUpload", file);
-        console.log(storedUserToken,"token")
+        console.log(storedUserToken, "token");
 
         const uploadRes = await uploadLogo(file, storedUserToken);
         console.log(uploadRes?.[0].id, "Resp");
@@ -104,14 +100,12 @@ const AddTeamScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <KeyboardAwareScrollView
+      bottomOffset={62}
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
     >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-      >
+     
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -188,9 +182,8 @@ const AddTeamScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </Modal>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </Modal> 
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -214,8 +207,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 30,
     position: "relative",
-    // overflow: "hidden",
-  },
+   },
   imageIcon: {
     position: "absolute",
     bottom: 8,

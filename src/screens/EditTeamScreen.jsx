@@ -5,8 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  ScrollView,
-  KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
 } from "react-native";
@@ -18,6 +16,7 @@ import CustomInput from "../components/CustomInput";
 import backIcon from "../../assets/backIcon.png";
 import { uploadLogo, updateTeam, getTeamsDetails } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const EditTeamScreen = ({ navigation, route }) => {
   const { teamId, team } = route.params;
@@ -135,7 +134,7 @@ const EditTeamScreen = ({ navigation, route }) => {
         logoId = uploadRes?.[0]?.id || logoId;
         console.log("Upload response:", uploadRes);
       } else {
-        console.log("⚡ Logo not changed — skipping upload.");
+        console.log(" Logo not changed — skipping upload.");
       }
 
       const updateData = {
@@ -168,56 +167,49 @@ const EditTeamScreen = ({ navigation, route }) => {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    <KeyboardAwareScrollView
+      bottomOffset={62}
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
     >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+      <TouchableOpacity
+        style={styles.backButton}
+        onPress={() => navigation.goBack()}
       >
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <Image source={backIcon} style={styles.backArrow} />
-        </TouchableOpacity>
+        <Image source={backIcon} style={styles.backArrow} />
+      </TouchableOpacity>
 
-        <Text style={styles.title}>Edit Team</Text>
+      <Text style={styles.title}>Edit Team</Text>
 
-        <TouchableOpacity style={styles.imageUpload} onPress={handlePickImage}>
-          {teamLogo ? (
-            <Image
-              source={{ uri: teamLogo?.uri }}
-              style={{ width: "100%", height: "100%", borderRadius: 50 }}
-            />
-          ) : (
-            <Ionicons name="image-outline" size={48} color="#ccc" />
-          )}
-          <View style={styles.imageIcon}>
-            <Ionicons name="camera" size={18} color="#fff" />
-          </View>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.imageUpload} onPress={handlePickImage}>
+        {teamLogo ? (
+          <Image
+            source={{ uri: teamLogo?.uri }}
+            style={{ width: "100%", height: "100%", borderRadius: 50 }}
+          />
+        ) : (
+          <Ionicons name="image-outline" size={48} color="#ccc" />
+        )}
+        <View style={styles.imageIcon}>
+          <Ionicons name="camera" size={18} color="#fff" />
+        </View>
+      </TouchableOpacity>
 
-        <CustomInput
-          label="Team Name"
-          value={teamName}
-          onChangeText={setTeamName}
-        />
-        <CustomInput
-          label="Country"
-          value={country}
-          onChangeText={setCountry}
-        />
+      <CustomInput
+        label="Team Name"
+        value={teamName}
+        onChangeText={setTeamName}
+      />
+      <CustomInput label="Country" value={country} onChangeText={setCountry} />
 
-        <GradientButton
-          title={loading ? <ActivityIndicator color="#fff" /> : "Update Team"}
-          onPress={handleSave}
-          style={styles.saveText}
-          disabled={loading}
-        />
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <GradientButton
+        title={loading ? <ActivityIndicator color="#fff" /> : "Update Team"}
+        onPress={handleSave}
+        style={styles.saveText}
+        disabled={loading}
+      />
+      
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -254,8 +246,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 40,
     position: "relative",
-    // overflow: "hidden",
-  },
+   },
   imageIcon: {
     position: "absolute",
     bottom: 8,

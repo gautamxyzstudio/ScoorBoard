@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Colors from "../contants/Colors";
+import { SafeAreaView } from "react-native-safe-area-context";
  
 const sportsData = [
   { id: 1, name: "Hockey", image: require("../../assets/hockey.png") },

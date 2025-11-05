@@ -5,14 +5,17 @@ import {
   StyleSheet,
   Animated,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   TouchableOpacity,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  KeyboardAwareScrollView,
+  KeyboardToolbar,
+} from "react-native-keyboard-controller";
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
 import Colors from "../contants/Colors";
@@ -30,10 +33,11 @@ const Login = ({ navigation }) => {
   } = useForm({ defaultValues: { email: "", password: "" } });
 
   const [rememberMe, setRememberMe] = useState(false);
+  const [loading, setLoading] = useState(false);  
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
 
- 
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -63,52 +67,37 @@ const Login = ({ navigation }) => {
       }),
     ]).start();
   }, []);
- 
+
   const onSubmit = async (data) => {
     const { email, password } = data;
+    setLoading(true);  
     try {
       const res = await loginUser({ identifier: email, password });
 
-    
       await AsyncStorage.setItem("userToken", res.jwt);
       await AsyncStorage.setItem("userInfo", JSON.stringify(res.user));
- 
       await AsyncStorage.setItem("rememberMe", rememberMe ? "true" : "false");
 
+      setLoading(false);  
       Alert.alert("Success", "Login successful!");
       navigation.replace("SelectSport");
     } catch (error) {
+      setLoading(false);  
       Alert.alert("Error", error.message || "Login failed!");
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.multiRemove(["userToken", "userInfo", "rememberMe"]);
-      Alert.alert("Logged out!");
-      navigation.replace("Login");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      <View style={styles.container}>
-        <Image
-          source={backgroundLogo}
-          style={styles.backgroundImage}
-          pointerEvents="none"
-        />
-        <Image
-          source={backgroundsecond}
-          style={styles.backgroundImg}
-          pointerEvents="none"
-        />
+    <View style={{ flex: 1, backgroundColor: Colors.background }}>
+      {/* Background images */}
+      <Image source={backgroundLogo} style={styles.backgroundImage} />
+      <Image source={backgroundsecond} style={styles.backgroundImg} />
 
+      <KeyboardAwareScrollView
+        bottomOffset={62}
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
         <Animated.View
           style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
         >
@@ -134,6 +123,7 @@ const Login = ({ navigation }) => {
                 value={value}
                 onChangeText={onChange}
                 keyboardType="email-address"
+                editable={!loading}  
               />
             )}
           />
@@ -156,6 +146,7 @@ const Login = ({ navigation }) => {
                 onChangeText={onChange}
                 secureTextEntry
                 showPasswordToggle
+                editable={!loading}  
               />
             )}
           />
@@ -163,26 +154,30 @@ const Login = ({ navigation }) => {
             <Text style={styles.errorText}>{errors.password.message}</Text>
           )}
 
-          {/*  Remember Me Section */}
+          {/* Remember Me */}
           <View style={styles.rememberContainer}>
             <View style={styles.checkboxRow}>
               <Checkbox.Android
                 status={rememberMe ? "checked" : "unchecked"}
-                onPress={() => setRememberMe(!rememberMe)}
+                onPress={() => !loading && setRememberMe(!rememberMe)}  
                 uncheckedColor="#414141"
                 theme={{ colors: { primary: "#068EFF" } }}
               />
               <Text style={styles.rememberText}>Remember me</Text>
             </View>
-            <TouchableOpacity onPress={() => Alert.alert("Forgot Password?")}>
+            <TouchableOpacity
+              onPress={() => !loading && Alert.alert("Forgot Password?")}
+              disabled={loading}  
+            >
               <Text style={styles.forgotText}>Forgot Password?</Text>
             </TouchableOpacity>
           </View>
 
+          {/* LOGIN BUTTON */}
           <GradientButton
-            title="Log In"
-            onPress={handleSubmit(onSubmit)}
-            style={styles.signUpButton}
+            title={loading ? "Loading..." : "Log In"}
+            onPress={!loading ? handleSubmit(onSubmit) : null}
+            style={[styles.signUpButton, loading && { opacity: 0.7 }]}
           />
 
           <View style={styles.dividerContainer}>
@@ -191,30 +186,39 @@ const Login = ({ navigation }) => {
             <View style={styles.line} />
           </View>
 
-          <TouchableOpacity style={styles.googleButton}>
+          <TouchableOpacity
+            style={styles.googleButton}
+            disabled={loading}  
+          >
             <Image source={GoogleIcon} style={styles.googleIcon} />
             <Text style={styles.googleText}>Continue with Google</Text>
           </TouchableOpacity>
 
           <View style={styles.footer}>
             <Text style={styles.footerText}>Don’t have an account?</Text>
-            <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+            <TouchableOpacity
+              onPress={() => !loading && navigation.navigate("SignUp")}
+              disabled={loading}  
+            >
               <Text style={styles.link}> Sign Up</Text>
             </TouchableOpacity>
           </View>
         </Animated.View>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
+
+       {loading && (
+        <View style={styles.overlay}>
+          <ActivityIndicator size="large" color="#fff" />
+        </View>
+      )}
+
+      <KeyboardToolbar />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.background,
-    padding: 20,
-    justifyContent: "center",
-  },
+  container: { flexGrow: 1, padding: 20, justifyContent: "center" },
   backgroundImage: {
     position: "absolute",
     top: -240,
@@ -223,7 +227,6 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "contain",
     zIndex: 0,
-    opacity: 1.25,
   },
   backgroundImg: {
     position: "absolute",
@@ -233,7 +236,6 @@ const styles = StyleSheet.create({
     height: "100%",
     resizeMode: "contain",
     zIndex: 0,
-    opacity: 1.25,
   },
   logo: { resizeMode: "contain", alignSelf: "center" },
   title: {
@@ -268,11 +270,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  checkboxRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderColor: "#414141",
-  },
+  checkboxRow: { flexDirection: "row", alignItems: "center" },
   rememberText: { color: "#414141", fontSize: 12 },
   forgotText: { color: "#068EFF", fontSize: 12, fontWeight: "500" },
   dividerContainer: {
@@ -281,14 +279,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   line: { flex: 1, height: 1, backgroundColor: "#ccc" },
-  orText: {
-    marginHorizontal: 10,
-    color: "#999",
-    fontSize: 14,
-    fontWeight: "500",
-  },
+  orText: { marginHorizontal: 10, color: "#999", fontSize: 14, fontWeight: "500" },
   googleButton: {
-    zIndex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -303,6 +295,15 @@ const styles = StyleSheet.create({
   footer: { flexDirection: "row", justifyContent: "center", marginTop: 15 },
   footerText: { color: Colors.gray },
   link: { color: "#068EFF", fontWeight: "600" },
+
+  
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 999,
+  },
 });
 
 export default Login;
