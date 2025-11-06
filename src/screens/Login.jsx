@@ -12,10 +12,6 @@ import {
 import { Checkbox } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  KeyboardAwareScrollView,
-  KeyboardToolbar,
-} from "react-native-keyboard-controller";
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
 import Colors from "../contants/Colors";
@@ -24,6 +20,7 @@ import GoogleIcon from "../../assets/googleIcon.png";
 import backgroundLogo from "../../assets/Vectorbg.png";
 import backgroundsecond from "../../assets/VectorSecond.png";
 import { loginUser } from "../api/auth";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const Login = ({ navigation }) => {
   const {
@@ -33,7 +30,7 @@ const Login = ({ navigation }) => {
   } = useForm({ defaultValues: { email: "", password: "" } });
 
   const [rememberMe, setRememberMe] = useState(false);
-  const [loading, setLoading] = useState(false);  
+  const [loading, setLoading] = useState(false);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
@@ -70,7 +67,7 @@ const Login = ({ navigation }) => {
 
   const onSubmit = async (data) => {
     const { email, password } = data;
-    setLoading(true);  
+    setLoading(true);
     try {
       const res = await loginUser({ identifier: email, password });
 
@@ -78,11 +75,11 @@ const Login = ({ navigation }) => {
       await AsyncStorage.setItem("userInfo", JSON.stringify(res.user));
       await AsyncStorage.setItem("rememberMe", rememberMe ? "true" : "false");
 
-      setLoading(false);  
+      setLoading(false);
       Alert.alert("Success", "Login successful!");
       navigation.replace("SelectSport");
     } catch (error) {
-      setLoading(false);  
+      setLoading(false);
       Alert.alert("Error", error.message || "Login failed!");
     }
   };
@@ -123,7 +120,7 @@ const Login = ({ navigation }) => {
                 value={value}
                 onChangeText={onChange}
                 keyboardType="email-address"
-                editable={!loading}  
+                editable={!loading}
               />
             )}
           />
@@ -146,7 +143,7 @@ const Login = ({ navigation }) => {
                 onChangeText={onChange}
                 secureTextEntry
                 showPasswordToggle
-                editable={!loading}  
+                editable={!loading}
               />
             )}
           />
@@ -159,7 +156,7 @@ const Login = ({ navigation }) => {
             <View style={styles.checkboxRow}>
               <Checkbox.Android
                 status={rememberMe ? "checked" : "unchecked"}
-                onPress={() => !loading && setRememberMe(!rememberMe)}  
+                onPress={() => !loading && setRememberMe(!rememberMe)}
                 uncheckedColor="#414141"
                 theme={{ colors: { primary: "#068EFF" } }}
               />
@@ -167,7 +164,7 @@ const Login = ({ navigation }) => {
             </View>
             <TouchableOpacity
               onPress={() => !loading && Alert.alert("Forgot Password?")}
-              disabled={loading}  
+              disabled={loading}
             >
               <Text style={styles.forgotText}>Forgot Password?</Text>
             </TouchableOpacity>
@@ -186,10 +183,7 @@ const Login = ({ navigation }) => {
             <View style={styles.line} />
           </View>
 
-          <TouchableOpacity
-            style={styles.googleButton}
-            disabled={loading}  
-          >
+          <TouchableOpacity style={styles.googleButton} disabled={loading}>
             <Image source={GoogleIcon} style={styles.googleIcon} />
             <Text style={styles.googleText}>Continue with Google</Text>
           </TouchableOpacity>
@@ -198,7 +192,7 @@ const Login = ({ navigation }) => {
             <Text style={styles.footerText}>Don’t have an account?</Text>
             <TouchableOpacity
               onPress={() => !loading && navigation.navigate("SignUp")}
-              disabled={loading}  
+              disabled={loading}
             >
               <Text style={styles.link}> Sign Up</Text>
             </TouchableOpacity>
@@ -206,13 +200,11 @@ const Login = ({ navigation }) => {
         </Animated.View>
       </KeyboardAwareScrollView>
 
-       {loading && (
+      {loading && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#fff" />
         </View>
       )}
-
-      <KeyboardToolbar />
     </View>
   );
 };
@@ -279,7 +271,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   line: { flex: 1, height: 1, backgroundColor: "#ccc" },
-  orText: { marginHorizontal: 10, color: "#999", fontSize: 14, fontWeight: "500" },
+  orText: {
+    marginHorizontal: 10,
+    color: "#999",
+    fontSize: 14,
+    fontWeight: "500",
+  },
   googleButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -296,7 +293,6 @@ const styles = StyleSheet.create({
   footerText: { color: Colors.gray },
   link: { color: "#068EFF", fontWeight: "600" },
 
-  
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.4)",

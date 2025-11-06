@@ -9,10 +9,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
-import {
-  KeyboardAwareScrollView,
-  KeyboardToolbar,
-} from "react-native-keyboard-controller";
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
 import Colors from "../contants/Colors";
@@ -21,9 +17,10 @@ import GoogleIcon from "../../assets/googleIcon.png";
 import backgroundLogo from "../../assets/Vectorbg.png";
 import backgroundImg from "../../assets/Vectorbg.png";
 import { registerUser, checkEmailExists } from "../api/auth";
+import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const SignUpScreen = ({ navigation }) => {
-  const [loading, setLoading] = useState(false); // 🔥 Loading state add kiya
+  const [loading, setLoading] = useState(false);
 
   const {
     control,
@@ -41,7 +38,7 @@ const SignUpScreen = ({ navigation }) => {
   });
 
   const onSubmit = async (data) => {
-    setLoading(true); // 🔥 Start loader
+    setLoading(true);
     try {
       const res = await registerUser({
         username: data.email,
@@ -57,7 +54,7 @@ const SignUpScreen = ({ navigation }) => {
       console.log("Signup Error:", error);
       Alert.alert("Error", error.message || "Signup failed!");
     } finally {
-      setLoading(false); // 🔥 Stop loader
+      setLoading(false);
     }
   };
 
@@ -86,7 +83,7 @@ const SignUpScreen = ({ navigation }) => {
               value={value}
               onChangeText={onChange}
               keyboardType="fullName"
-              editable={!loading} // 🔥 disable while loading
+              editable={!loading}
             />
           )}
         />
@@ -120,7 +117,7 @@ const SignUpScreen = ({ navigation }) => {
               onChangeText={field.onChange}
               onBlur={field.onBlur}
               keyboardType="email-address"
-              editable={!loading} // 🔥 disable while loading
+              editable={!loading}
             />
           )}
         />
@@ -139,7 +136,7 @@ const SignUpScreen = ({ navigation }) => {
               value={value}
               onChangeText={onChange}
               keyboardType="phone-pad"
-              editable={!loading} // 🔥 disable while loading
+              editable={!loading}
             />
           )}
         />
@@ -162,7 +159,7 @@ const SignUpScreen = ({ navigation }) => {
               onChangeText={onChange}
               secureTextEntry
               showPasswordToggle
-              editable={!loading} // 🔥 disable while loading
+              editable={!loading}
             />
           )}
         />
@@ -171,8 +168,8 @@ const SignUpScreen = ({ navigation }) => {
         )}
 
         <GradientButton
-          title={loading ? "Creating..." : "Sign Up"} // 🔥 show text
-          onPress={!loading ? handleSubmit(onSubmit) : null} // 🔥 disable tap
+          title={loading ? "Creating..." : "Sign Up"}
+          onPress={!loading ? handleSubmit(onSubmit) : null}
           style={styles.signUpButton}
           disabled={loading}
         />
@@ -185,7 +182,7 @@ const SignUpScreen = ({ navigation }) => {
 
         <TouchableOpacity
           style={[styles.googleButton, loading && { opacity: 0.5 }]}
-          disabled={loading} // 🔥 disable tap
+          disabled={loading}
         >
           <Image source={GoogleIcon} style={styles.googleIcon} />
           <Text style={styles.googleText}>Continue with Google</Text>
@@ -194,7 +191,7 @@ const SignUpScreen = ({ navigation }) => {
         <View style={styles.footer}>
           <Text style={styles.footerText}>Already have an account?</Text>
           <TouchableOpacity
-            onPress={() => !loading && navigation.navigate("LoginPage")} // 🔥 disable tap
+            onPress={() => !loading && navigation.navigate("LoginPage")}
             disabled={loading}
           >
             <Text style={styles.link}> Login</Text>
@@ -202,9 +199,6 @@ const SignUpScreen = ({ navigation }) => {
         </View>
       </KeyboardAwareScrollView>
 
-      <KeyboardToolbar />
-
-      {/* 🔥 Full-screen loader overlay */}
       {loading && (
         <View style={styles.overlay}>
           <ActivityIndicator size="large" color="#fff" />

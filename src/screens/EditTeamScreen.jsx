@@ -208,7 +208,6 @@ const EditTeamScreen = ({ navigation, route }) => {
         style={styles.saveText}
         disabled={loading}
       />
-      
     </KeyboardAwareScrollView>
   );
 };
@@ -246,7 +245,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     marginTop: 40,
     position: "relative",
-   },
+  },
   imageIcon: {
     position: "absolute",
     bottom: 8,
