@@ -3,9 +3,13 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   Image,
   ActivityIndicator,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Alert,
 } from "react-native";
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
@@ -15,7 +19,7 @@ import backgroundLogo from "../../assets/Vectorbg.png";
 import backgroundImg from "../../assets/Vectorbg.png";
 import { getMatchByCode } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import GradientText from "../gradientText/GradientText";
 
 const ViewLogin = ({ navigation }) => {
   const [matchCode, setMatchCode] = useState("");
@@ -52,39 +56,68 @@ const ViewLogin = ({ navigation }) => {
     }
   };
 
+  const handleNavigate = (screen) => {
+    navigation.navigate(screen);
+  };
+
   return (
     <>
-      <KeyboardAwareScrollView
-        bottomOffset={62}
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 10}
       >
-        {/* Background */}
-        <View style={StyleSheet.absoluteFill} pointerEvents="none">
-          <Image source={backgroundLogo} style={styles.backgroundTop} />
-          <Image source={backgroundImg} style={styles.backgroundBottom} />
-        </View>
+        <ScrollView
+   
+          contentContainerStyle={{ flexGrow: 1,}} bounces={false} 
+          keyboardShouldPersistTaps="handled"
+        >
+          <View style={styles.container}>
+            {/* Background */}
+            <View style={StyleSheet.absoluteFill} pointerEvents="none">
+              <Image source={backgroundLogo} style={styles.backgroundTop} />
+              <Image source={backgroundImg} style={styles.backgroundBottom} />
+            </View>
 
-        {/* Logo */}
-        <Image source={bluevector} style={styles.logo} />
-        <Text style={styles.title}>SportSynz</Text>
+            {/* Logo */}
+            <Image source={bluevector} style={styles.logo} />
+            <Text style={styles.title}>SportSynz</Text>
 
-        {/* Input */}
-        <Text style={styles.inputLabel}>Enter Match Code</Text>
-        <CustomInput
-          value={matchCode}
-          onChangeText={handleCodeChange}
-          placeholder="Enter match code"
-          maxLength={11}
-        />
+            {/* Input */}
+            <Text style={styles.inputLabel}>Enter Match Code</Text>
+            <CustomInput
+              value={matchCode}
+              onChangeText={handleCodeChange}
+              placeholder="Enter match code"
+              maxLength={11}
+              keyboardType="default"
+              returnKeyType="done"
+            />
 
-        <GradientButton
-          onPress={handleGetMatch}
-          title="View Match"
-          style={styles.secondLast}
-          disabled={loading}
-        />
-      </KeyboardAwareScrollView>
+            {/* View Match Button */}
+            <GradientButton
+              onPress={handleGetMatch}
+              title="View Match"
+              style={styles.secondLast}
+              disabled={loading}
+            />
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.line} />
+              <Text style={styles.orText}>Or</Text>
+              <View style={styles.line} />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => handleNavigate("LoginPage")}
+              style={styles.googleButton}
+              disabled={loading}
+            >
+              <GradientText text="Access Admin" style={styles.gradientText} />
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {loading && (
         <View style={styles.loadingOverlay}>
@@ -140,6 +173,36 @@ const styles = StyleSheet.create({
   secondLast: {
     marginTop: 32,
   },
+  googleButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#EFF0F7",
+    borderRadius: 10,
+    height: 48,
+    backgroundColor: "#F5F5F5",
+  },
+  gradientText: {
+    fontSize: 17,
+    fontWeight: "700",
+    fontFamily: "Kumbh Sans",
+    lineHeight: 40,
+    textTransform: "capitalize",
+    textAlign: "center",
+  },
+  dividerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 20,
+  },
+  line: { flex: 1, height: 1, backgroundColor: "#ccc" },
+  orText: {
+    marginHorizontal: 10,
+    color: "#414141)",
+    fontSize: 14,
+    fontWeight: "500",
+  },  
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.3)",

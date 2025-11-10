@@ -8,6 +8,8 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import { Checkbox } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
@@ -20,7 +22,7 @@ import GoogleIcon from "../../assets/googleIcon.png";
 import backgroundLogo from "../../assets/Vectorbg.png";
 import backgroundsecond from "../../assets/VectorSecond.png";
 import { loginUser } from "../api/auth";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+import GradientText from "../gradientText/GradientText";
 
 const Login = ({ navigation }) => {
   const {
@@ -85,127 +87,134 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: Colors.background }}>
-      {/* Background images */}
-      <Image source={backgroundLogo} style={styles.backgroundImage} />
-      <Image source={backgroundsecond} style={styles.backgroundImg} />
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 0}
+    >
+      <View style={{ flex: 1, backgroundColor: Colors.background }}>
+        {/* Background images */}
+        <Image source={backgroundLogo} style={styles.backgroundImage} />
+        <Image source={backgroundsecond} style={styles.backgroundImg} />
 
-      <KeyboardAwareScrollView
-        bottomOffset={62}
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Animated.View
-          style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}
-        >
-          <Image source={blueImg} style={styles.logo} />
-          <Text style={styles.title}>SportSynz</Text>
-          <Text style={styles.heading}>Get Started Now</Text>
-          <Text style={styles.description}>
-            Log in to explore about our app
-          </Text>
-
-          {/* Email Input */}
-          <Controller
-            control={control}
-            name="email"
-            rules={{
-              required: "Email is required",
-              pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              validate: (v) => v.endsWith("@gmail.com") || "Only Gmail allowed",
+        <View style={styles.container}>
+          <Animated.View
+            style={{
+              opacity: fadeAnim,
+              transform: [{ translateY: slideAnim }],
             }}
-            render={({ field: { onChange, value } }) => (
-              <CustomInput
-                label="Email"
-                value={value}
-                onChangeText={onChange}
-                keyboardType="email-address"
-                editable={!loading}
-              />
-            )}
-          />
-          {errors.email && (
-            <Text style={styles.errorText}>{errors.email.message}</Text>
-          )}
+          >
+            <Image source={blueImg} style={styles.logo} />
+            <Text style={styles.title}>SportSynz</Text>
+            <Text style={styles.heading}>Get Started Now</Text>
+            <Text style={styles.description}>
+              Log in to explore about our app
+            </Text>
 
-          {/* Password Input */}
-          <Controller
-            control={control}
-            name="password"
-            rules={{
-              required: "Password required",
-              minLength: { value: 4, message: "Min 4 chars" },
-            }}
-            render={({ field: { onChange, value } }) => (
-              <CustomInput
-                label="Password"
-                value={value}
-                onChangeText={onChange}
-                secureTextEntry
-                showPasswordToggle
-                editable={!loading}
-              />
+            {/* Email Input */}
+            <Controller
+              control={control}
+              name="email"
+              rules={{
+                required: "Email is required",
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                validate: (v) =>
+                  v.endsWith("@gmail.com") || "Only Gmail allowed",
+              }}
+              render={({ field: { onChange, value } }) => (
+                <CustomInput
+                  label="Email"
+                  value={value}
+                  onChangeText={onChange}
+                  keyboardType="email-address"
+                  editable={!loading}
+                />
+              )}
+            />
+            {errors.email && (
+              <Text style={styles.errorText}>{errors.email.message}</Text>
             )}
-          />
-          {errors.password && (
-            <Text style={styles.errorText}>{errors.password.message}</Text>
-          )}
 
-          {/* Remember Me */}
-          <View style={styles.rememberContainer}>
-            <View style={styles.checkboxRow}>
-              <Checkbox.Android
-                status={rememberMe ? "checked" : "unchecked"}
-                onPress={() => !loading && setRememberMe(!rememberMe)}
-                uncheckedColor="#414141"
-                theme={{ colors: { primary: "#068EFF" } }}
-              />
-              <Text style={styles.rememberText}>Remember me</Text>
+            {/* Password Input */}
+            <Controller
+              control={control}
+              name="password"
+              rules={{
+                required: "Password required",
+                minLength: { value: 4, message: "Min 4 chars" },
+              }}
+              render={({ field: { onChange, value } }) => (
+                <CustomInput
+                  label="Password"
+                  value={value}
+                  onChangeText={onChange}
+                  secureTextEntry
+                  showPasswordToggle
+                  editable={!loading}
+                />
+              )}
+            />
+            {errors.password && (
+              <Text style={styles.errorText}>{errors.password.message}</Text>
+            )}
+
+            {/* Remember Me */}
+            <View style={styles.rememberContainer}>
+              <View style={styles.checkboxRow}>
+                <Checkbox.Android
+                  status={rememberMe ? "checked" : "unchecked"}
+                  onPress={() => !loading && setRememberMe(!rememberMe)}
+                  uncheckedColor="#414141"
+                  theme={{ colors: { primary: "#068EFF" } }}
+                />
+                <Text style={styles.rememberText}>Remember me</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => !loading && Alert.alert("Forgot Password?")}
+                disabled={loading}
+              >
+                <Text style={styles.forgotText}>Forgot Password?</Text>
+              </TouchableOpacity>
             </View>
-            <TouchableOpacity
-              onPress={() => !loading && Alert.alert("Forgot Password?")}
-              disabled={loading}
-            >
-              <Text style={styles.forgotText}>Forgot Password?</Text>
+
+            {/* LOGIN BUTTON */}
+            <GradientButton
+              title={loading ? "Loading..." : "Log In"}
+              onPress={!loading ? handleSubmit(onSubmit) : null}
+              style={[styles.signUpButton, loading && { opacity: 0.7 }]}
+            />
+
+            <View style={styles.dividerContainer}>
+              <View style={styles.line} />
+              <Text style={styles.orText}>Or login with</Text>
+              <View style={styles.line} />
+            </View>
+
+            <TouchableOpacity style={styles.googleButton} disabled={loading}>
+              <Image source={GoogleIcon} style={styles.googleIcon} />
+              <Text style={styles.googleText}>Continue with Google</Text>
             </TouchableOpacity>
-          </View>
 
-          {/* LOGIN BUTTON */}
-          <GradientButton
-            title={loading ? "Loading..." : "Log In"}
-            onPress={!loading ? handleSubmit(onSubmit) : null}
-            style={[styles.signUpButton, loading && { opacity: 0.7 }]}
-          />
-
-          <View style={styles.dividerContainer}>
-            <View style={styles.line} />
-            <Text style={styles.orText}>Or login with</Text>
-            <View style={styles.line} />
-          </View>
-
-          <TouchableOpacity style={styles.googleButton} disabled={loading}>
-            <Image source={GoogleIcon} style={styles.googleIcon} />
-            <Text style={styles.googleText}>Continue with Google</Text>
-          </TouchableOpacity>
-
-          <View style={styles.footer}>
-            <Text style={styles.footerText}>Don’t have an account?</Text>
-            <TouchableOpacity
-              onPress={() => !loading && navigation.navigate("SignUp")}
-              disabled={loading}
-            >
-              <Text style={styles.link}> Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        </Animated.View>
-      </KeyboardAwareScrollView>
-
-      {loading && (
-        <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#fff" />
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>Don’t have an account?</Text>
+              <TouchableOpacity
+                onPress={() => !loading && navigation.navigate("SignUp")}
+                disabled={loading}
+              >
+                <Text style={styles.link}> Sign Up</Text>
+                {/* <GradientText text={} style={styles.link}>Sign Up/> */}
+              </TouchableOpacity>
+            </View>
+          </Animated.View>
         </View>
-      )}
-    </View>
+
+        {loading && (
+          <View style={styles.overlay}>
+            <ActivityIndicator size="large" color="#fff" />
+          </View>
+        )}
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -287,6 +296,7 @@ const styles = StyleSheet.create({
     height: 48,
     backgroundColor: "#EFF0F7",
   },
+
   googleIcon: { width: 20, height: 20, marginRight: 8 },
   googleText: { fontSize: 15, fontWeight: "500", color: "#414141" },
   footer: { flexDirection: "row", justifyContent: "center", marginTop: 15 },

@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     alignItems: "center",
   },
-  teamContainer: { alignItems: "center" },
+   teamContainer: { alignItems: "center",marginBottom:10, },
   firstImg: {
     flexDirection: "row",
     alignItems: "center",

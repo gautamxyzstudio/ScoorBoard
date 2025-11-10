@@ -19,7 +19,6 @@ import backIcon from "../../assets/backIcon.png";
 import { createTeam, uploadLogo } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import tick from "../../assets/tick.png";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 
 const AddTeamScreen = ({ navigation }) => {
   const [teamName, setTeamName] = useState("");
@@ -100,12 +99,7 @@ const AddTeamScreen = ({ navigation }) => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      bottomOffset={62}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
-     
+     <View style={styles.container}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -183,7 +177,7 @@ const AddTeamScreen = ({ navigation }) => {
             </View>
           </View>
         </Modal> 
-    </KeyboardAwareScrollView>
+    </View>
   );
 };
 

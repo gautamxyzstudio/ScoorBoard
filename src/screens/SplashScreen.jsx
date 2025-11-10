@@ -5,7 +5,7 @@ import vector from "../../assets/Vector.png";
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace("Login");
+      navigation.replace("ViewLogin");
     }, 2000);
 
     return () => clearTimeout(timer);

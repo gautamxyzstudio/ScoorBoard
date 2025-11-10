@@ -26,7 +26,8 @@ const AppNavigation = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Login" component={EnterScreen} />
+        {/* <Stack.Screen name="Login" component={EnterScreen} /> */}
+          <Stack.Screen name="ViewLogin" component={ViewLogin} />
         <Stack.Screen name="LoginPage" component={Login} />
         <Stack.Screen name="SignUp" component={SignUpScreen} />
         <Stack.Screen name="SelectSport" component={SelectSportScreen} />
@@ -35,7 +36,7 @@ const AppNavigation = () => {
         <Stack.Screen name="TournamentScreen" component={TournamentScreen} />
         <Stack.Screen name="AddTeamScreen" component={AddTeamScreen} />
         <Stack.Screen name="HomeEditScore" component={HomeEditScore} />
-        <Stack.Screen name="ViewLogin" component={ViewLogin} />
+        {/* <Stack.Screen name="ViewLogin" component={ViewLogin} /> */}
         <Stack.Screen name="FinalScoor" component={FinalScoor} />
         <Stack.Screen name="TeamManagementScreen" component={TeamManagementScreen}/>
         <Stack.Screen name="EditTeamScreen" component={EditTeamScreen} />

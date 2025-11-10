@@ -146,21 +146,17 @@ const SingleMatchScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.vsWrapper}>
-        <TouchableOpacity onPress={() => navigation.navigate("ViewLogin")}>
-          <GradientText
-            text="Vs"
-            style={{
-              fontSize: 36,
-              fontWeight: "700",
-              fontFamily: "Kumbh Sans",
-              lineHeight: 40,
-              textTransform: "capitalize",
-              textAlign: "center",
-            }}
-          />
-        </TouchableOpacity>
-      </View>
+      <GradientText
+        text="Vs"
+        style={{
+          fontSize: 36,
+          fontWeight: "700",
+          fontFamily: "Kumbh Sans",
+          lineHeight: 40,
+          textTransform: "capitalize",
+          textAlign: "center",
+        }}
+      />
 
       {/* Team B */}
       <View style={styles.teamBox}>
@@ -253,7 +249,7 @@ const SingleMatchScreen = ({ navigation }) => {
               <Text style={styles.closeText}>Cancel</Text>
             </TouchableOpacity>
           </View>
-        </View>
+      </View>
       </Modal>
     </View>
   );
@@ -295,6 +291,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 28,
   },
+
   newTeamText: { color: Colors.primary, fontWeight: "600", fontSize: 16 },
   downArrow: { width: 32, height: 32 },
   footerButtons: {

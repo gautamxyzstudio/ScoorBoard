@@ -17,7 +17,7 @@ import GoogleIcon from "../../assets/googleIcon.png";
 import backgroundLogo from "../../assets/Vectorbg.png";
 import backgroundImg from "../../assets/Vectorbg.png";
 import { registerUser, checkEmailExists } from "../api/auth";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+
 
 const SignUpScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -63,10 +63,9 @@ const SignUpScreen = ({ navigation }) => {
       <Image source={backgroundLogo} style={styles.backgroundTop} />
       <Image source={backgroundImg} style={styles.backgroundBottom} />
 
-      <KeyboardAwareScrollView
-        bottomOffset={62}
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+      <View
+       style={styles.container}
+        
       >
         <Image source={blueImg} style={styles.logo} />
         <Text style={styles.title}>SportSynz</Text>
@@ -197,7 +196,7 @@ const SignUpScreen = ({ navigation }) => {
             <Text style={styles.link}> Login</Text>
           </TouchableOpacity>
         </View>
-      </KeyboardAwareScrollView>
+      </View>
 
       {loading && (
         <View style={styles.overlay}>

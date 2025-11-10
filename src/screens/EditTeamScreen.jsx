@@ -16,7 +16,7 @@ import CustomInput from "../components/CustomInput";
 import backIcon from "../../assets/backIcon.png";
 import { uploadLogo, updateTeam, getTeamsDetails } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+
 
 const EditTeamScreen = ({ navigation, route }) => {
   const { teamId, team } = route.params;
@@ -167,10 +167,10 @@ const EditTeamScreen = ({ navigation, route }) => {
   }
 
   return (
-    <KeyboardAwareScrollView
-      bottomOffset={62}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
+    <View
+   
+     style={styles.container}
+      
     >
       <TouchableOpacity
         style={styles.backButton}
@@ -208,7 +208,7 @@ const EditTeamScreen = ({ navigation, route }) => {
         style={styles.saveText}
         disabled={loading}
       />
-    </KeyboardAwareScrollView>
+    </View>
   );
 };
 

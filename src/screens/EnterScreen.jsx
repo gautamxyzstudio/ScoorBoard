@@ -7,7 +7,7 @@ import {
   Image,
   Platform,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
+
 import CustomInput from "../components/CustomInput";
 import GradientButton from "../gradientButton/GradientButton";
 import Colors from "../contants/Colors";
@@ -92,10 +92,10 @@ const EnterScreen = ({ navigation }) => {
 
   return (
     <>
-      <KeyboardAwareScrollView
-        bottomOffset={62}
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+      <View
+     
+       style={styles.container}
+        
       >
         {/*  Background Images (static) */}
         <View style={StyleSheet.absoluteFill} pointerEvents="none">
@@ -131,7 +131,7 @@ const EnterScreen = ({ navigation }) => {
             />
           </View>
         </Animated.View>
-      </KeyboardAwareScrollView>
+      </View>
 
       {/* Toolbar under Keyboard */}
     </>
