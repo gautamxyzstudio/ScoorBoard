@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ScoorBoard Mobile App",
+    "name": "ScoorBoard",
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -35,7 +35,7 @@
           "WRITE_EXTERNAL_STORAGE",
           "CAMERA"
         ],
-        "foregroundImage": "./assets/sideLogo.png",
+        "foregroundImage": "./assets/appLogo.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
@@ -47,7 +47,7 @@
       "package": "com.amitexpo1021.myapp"
     },
     "web": {
-      "favicon": "./assets/sideLogo.png"
+      "favicon": "./assets/appLogo.svg"
     },
     "plugins": ["expo-font", "expo-image-picker"],
     "extra": {

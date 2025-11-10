@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   FlatList,
+  Platform,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -88,7 +90,6 @@ const MatchHistoryScreen = ({ navigation }) => {
 
     const unit = "goals";
 
-    //  Winner logic
     let winnerText = "";
     if (teamAScore === teamBScore) {
       winnerText = " Match Drawn";
@@ -150,7 +151,19 @@ const MatchHistoryScreen = ({ navigation }) => {
 
       {loading ? (
         <ActivityIndicator size="large" color={Colors.primary} />
+      ) : Platform.OS === "web" ? (
+      
+        <View style={styles.webScrollContainer}>
+          <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+            {matches.map((item, index) => (
+              <View key={item?.id?.toString() || index.toString()}>
+                {renderItem({ item })}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
       ) : (
+     
         <FlatList
           data={matches}
           keyExtractor={(item, index) =>
@@ -175,7 +188,20 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     paddingTop: 60,
     paddingHorizontal: 15,
+
+  
+    height: "100vh",
+    overflowY: "auto",
+    display: "flex",
   },
+
+ 
+  webScrollContainer: {
+    flex: 1,
+    maxHeight: "calc(100vh - 150px)", 
+    overflowY: "auto",
+  },
+
   header: {
     flexDirection: "row",
     justifyContent: "space-between",

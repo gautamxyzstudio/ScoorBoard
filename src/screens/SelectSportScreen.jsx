@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingHorizontal: 20,
-    paddingTop: 80,
+    paddingTop: 100,
   },
   progressContainer: {
     flexDirection: "row",
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   footer: {
-    marginTop: 260,
+    marginTop: 250,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

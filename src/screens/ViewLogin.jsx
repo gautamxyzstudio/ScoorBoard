@@ -6,9 +6,6 @@ import {
   Image,
   ActivityIndicator,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   Alert,
 } from "react-native";
 import CustomInput from "../components/CustomInput";
@@ -20,6 +17,7 @@ import backgroundImg from "../../assets/Vectorbg.png";
 import { getMatchByCode } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GradientText from "../gradientText/GradientText";
+import { KeyboardAwareScrollView } from "@pietile-native-kit/keyboard-aware-scrollview";
 
 const ViewLogin = ({ navigation }) => {
   const [matchCode, setMatchCode] = useState("");
@@ -62,62 +60,57 @@ const ViewLogin = ({ navigation }) => {
 
   return (
     <>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 10}
+      <KeyboardAwareScrollView
+        extraKeyboardSpace={30}
+        contentContainerStyle={styles.container}
+        enableOnAndroid
+        keyboardShouldPersistTaps="handled"
       >
-        <ScrollView
-   
-          contentContainerStyle={{ flexGrow: 1,}} bounces={false} 
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.container}>
-            {/* Background */}
-            <View style={StyleSheet.absoluteFill} pointerEvents="none">
-              <Image source={backgroundLogo} style={styles.backgroundTop} />
-              <Image source={backgroundImg} style={styles.backgroundBottom} />
-            </View>
-
-            {/* Logo */}
-            <Image source={bluevector} style={styles.logo} />
-            <Text style={styles.title}>SportSynz</Text>
-
-            {/* Input */}
-            <Text style={styles.inputLabel}>Enter Match Code</Text>
-            <CustomInput
-              value={matchCode}
-              onChangeText={handleCodeChange}
-              placeholder="Enter match code"
-              maxLength={11}
-              keyboardType="default"
-              returnKeyType="done"
-            />
-
-            {/* View Match Button */}
-            <GradientButton
-              onPress={handleGetMatch}
-              title="View Match"
-              style={styles.secondLast}
-              disabled={loading}
-            />
-
-            <View style={styles.dividerContainer}>
-              <View style={styles.line} />
-              <Text style={styles.orText}>Or</Text>
-              <View style={styles.line} />
-            </View>
-
-            <TouchableOpacity
-              onPress={() => handleNavigate("LoginPage")}
-              style={styles.googleButton}
-              disabled={loading}
-            >
-              <GradientText text="Access Admin" style={styles.gradientText} />
-            </TouchableOpacity>
+        <View style={styles.container}>
+          {/* Background */}
+          <View style={StyleSheet.absoluteFill} pointerEvents="none">
+            <Image source={backgroundLogo} style={styles.backgroundTop} />
+            <Image source={backgroundImg} style={styles.backgroundBottom} />
           </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+
+          {/* Logo */}
+          <Image source={bluevector} style={styles.logo} />
+          <Text style={styles.title}>SportSynz</Text>
+
+          {/* Input */}
+          <Text style={styles.inputLabel}>Enter Match Code</Text>
+          <CustomInput
+            value={matchCode}
+            onChangeText={handleCodeChange}
+            placeholder="Enter match code"
+            maxLength={11}
+            keyboardType="default"
+            returnKeyType="done"
+          />
+
+          {/* View Match Button */}
+          <GradientButton
+            onPress={handleGetMatch}
+            title="View Match"
+            style={styles.secondLast}
+            disabled={loading}
+          />
+
+          <View style={styles.dividerContainer}>
+            <View style={styles.line} />
+            <Text style={styles.orText}>Or</Text>
+            <View style={styles.line} />
+          </View>
+
+          <TouchableOpacity
+            onPress={() => handleNavigate("LoginPage")}
+            style={styles.googleButton}
+            disabled={loading}
+          >
+            <GradientText text="Access Admin" style={styles.gradientText} />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAwareScrollView>
 
       {loading && (
         <View style={styles.loadingOverlay}>
@@ -132,13 +125,13 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     backgroundColor: Colors.background,
-    padding: 20,
+    padding: 10,
     justifyContent: "center",
   },
   backgroundTop: {
     position: "absolute",
     top: -250,
-    left: 210,
+    left: 201,
     width: "50%",
     height: "100%",
     resizeMode: "contain",
@@ -146,7 +139,7 @@ const styles = StyleSheet.create({
   backgroundBottom: {
     position: "absolute",
     top: 280,
-    left: 0,
+    left: -10,
     width: "50%",
     height: "100%",
     resizeMode: "contain",
@@ -202,7 +195,7 @@ const styles = StyleSheet.create({
     color: "#414141)",
     fontSize: 14,
     fontWeight: "500",
-  },  
+  },
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.3)",

@@ -19,6 +19,7 @@ import backIcon from "../../assets/backIcon.png";
 import { createTeam, uploadLogo } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import tick from "../../assets/tick.png";
+import { KeyboardAwareScrollView } from "@pietile-native-kit/keyboard-aware-scrollview";
 
 const AddTeamScreen = ({ navigation }) => {
   const [teamName, setTeamName] = useState("");
@@ -99,7 +100,13 @@ const AddTeamScreen = ({ navigation }) => {
   };
 
   return (
-     <View style={styles.container}>
+     <KeyboardAwareScrollView
+          extraKeyboardSpace={30}
+          contentContainerStyle={styles.container}
+          enableOnAndroid
+          keyboardShouldPersistTaps="handled"
+        > 
+   
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => navigation.goBack()}
@@ -177,7 +184,8 @@ const AddTeamScreen = ({ navigation }) => {
             </View>
           </View>
         </Modal> 
-    </View>
+ 
+    </KeyboardAwareScrollView>
   );
 };
 

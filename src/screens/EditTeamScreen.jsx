@@ -16,7 +16,7 @@ import CustomInput from "../components/CustomInput";
 import backIcon from "../../assets/backIcon.png";
 import { uploadLogo, updateTeam, getTeamsDetails } from "../api/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { KeyboardAwareScrollView } from "@pietile-native-kit/keyboard-aware-scrollview";
 
 const EditTeamScreen = ({ navigation, route }) => {
   const { teamId, team } = route.params;
@@ -167,10 +167,11 @@ const EditTeamScreen = ({ navigation, route }) => {
   }
 
   return (
-    <View
-   
-     style={styles.container}
-      
+    <KeyboardAwareScrollView
+      extraKeyboardSpace={30}
+      contentContainerStyle={styles.container}
+      enableOnAndroid
+      keyboardShouldPersistTaps="handled"
     >
       <TouchableOpacity
         style={styles.backButton}
@@ -208,7 +209,7 @@ const EditTeamScreen = ({ navigation, route }) => {
         style={styles.saveText}
         disabled={loading}
       />
-    </View>
+    </KeyboardAwareScrollView>
   );
 };
 
