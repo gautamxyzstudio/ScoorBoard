@@ -249,7 +249,7 @@ const SingleMatchScreen = ({ navigation }) => {
               <Text style={styles.closeText}>Cancel</Text>
             </TouchableOpacity>
           </View>
-      </View>
+        </View>
       </Modal>
     </View>
   );
