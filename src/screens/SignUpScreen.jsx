@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import CustomInput from "../components/CustomInput";
@@ -19,8 +20,62 @@ import backgroundImg from "../../assets/Vectorbg.png";
 import { registerUser, checkEmailExists } from "../api/auth";
 import { KeyboardAwareScrollView } from "@pietile-native-kit/keyboard-aware-scrollview";
 
+// Google Auth imports
+import * as WebBrowser from "expo-web-browser";
+import * as Google from "expo-auth-session/providers/google";
+import * as AuthSession from "expo-auth-session";
+
+WebBrowser.maybeCompleteAuthSession();
+
 const SignUpScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
+
+  // Generate redirect URI for Expo Go / standalone
+  const redirectUri = AuthSession.makeRedirectUri({
+    useProxy: Platform.OS === "web",  
+    scheme: "com.amitsingh.sportsynz", // iOS Bundle ID / Android package
+  });
+  console.log("Redirect URI:", redirectUri);
+
+  // Google Auth setup for Web, Android, iOS
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    webClientId:
+      "366532913009-tr1k7nd6jc8b9m1qtcpq0a6c4itm7j95.apps.googleusercontent.com",  
+    androidClientId:
+      "366532913009-lp7248tbhomjr0g84l37ubkli95fbc12.apps.googleusercontent.com",  
+    iosClientId:
+      "366532913009-mh6u0mfn9jvfqcp72me1a5v7l2ut2dhm.apps.googleusercontent.com",  
+    redirectUri,
+    scopes: ["profile", "email"],
+    useProxy: Platform.OS !== "android" && Platform.OS !== "ios" ? true : false,
+  });
+
+  const getUserInfo = async (token) => {
+    try {
+      const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const user = await res.json();
+      console.log("👤 Google User:", user);
+      return user;
+    } catch (err) {
+      console.error("Failed to fetch user info:", err);
+    }
+  };
+
+  useEffect(() => {
+    const handleGoogleResponse = async () => {
+      if (response?.type === "success") {
+        const { authentication } = response;
+        const user = await getUserInfo(authentication.accessToken);
+        if (user?.email) {
+          Alert.alert("Success", `Welcome ${user.name}!`);
+          navigation.replace("SelectSport");
+        }
+      }
+    };
+    handleGoogleResponse();
+  }, [response]);
 
   const {
     control,
@@ -83,7 +138,7 @@ const SignUpScreen = ({ navigation }) => {
               label="Full Name"
               value={value}
               onChangeText={onChange}
-              keyboardType="fullName"
+              keyboardType="default"
               editable={!loading}
             />
           )}
@@ -106,7 +161,7 @@ const SignUpScreen = ({ navigation }) => {
               try {
                 const exists = await checkEmailExists(value);
                 return exists.exists ? "Email already exists" : true;
-              } catch (err) {
+              } catch {
                 return "Unable to verify email";
               }
             },
@@ -181,9 +236,11 @@ const SignUpScreen = ({ navigation }) => {
           <View style={styles.line} />
         </View>
 
+        {/* Google Sign-In */}
         <TouchableOpacity
           style={[styles.googleButton, loading && { opacity: 0.5 }]}
           disabled={loading}
+          onPress={() => promptAsync()}
         >
           <Image source={GoogleIcon} style={styles.googleIcon} />
           <Text style={styles.googleText}>Continue with Google</Text>
@@ -209,6 +266,7 @@ const SignUpScreen = ({ navigation }) => {
   );
 };
 
+// Styles unchanged
 const styles = StyleSheet.create({
   backgroundTop: {
     position: "absolute",
@@ -231,11 +289,7 @@ const styles = StyleSheet.create({
     opacity: 1,
     zIndex: 0,
   },
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    justifyContent: "center",
-  },
+  container: { flexGrow: 1, padding: 20, justifyContent: "center" },
   logo: { resizeMode: "contain", alignSelf: "center" },
   title: {
     fontSize: 24,

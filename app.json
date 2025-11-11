@@ -4,7 +4,6 @@
     "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
-  
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
@@ -15,15 +14,16 @@
     },
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.amitexpo1021.myapp",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload pictures.",
         "NSCameraUsageDescription": "We need access to your camera so you can take pictures.",
         "ITSAppUsesNonExemptEncryption": false
-      },
-      "bundleIdentifier": "com.amitexpo1021.myapp"
+      }
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
+      "package": "com.amitexpo1021.myapp",
       "adaptiveIcon": {
         "permissions": [
           "INTERNET",
@@ -43,13 +43,12 @@
         "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
       ],
-
       "package": "com.amitexpo1021.myapp"
     },
     "web": {
       "favicon": "./assets/appLogo.svg"
     },
-    "plugins": ["expo-font", "expo-image-picker"],
+    "plugins": ["expo-font", "expo-image-picker", "expo-web-browser"],
     "extra": {
       "eas": {
         "projectId": "d89df8bc-e8e5-419b-9135-7ccf83a64cee"
