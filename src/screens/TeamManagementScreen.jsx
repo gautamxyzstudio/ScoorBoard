@@ -53,7 +53,7 @@ const TeamManagementScreen = ({ navigation }) => {
       if (route.params?.newTeam) {
         // when new team added
         setTeams((prev) => [
-          route.params.newTeam, // top
+          route.params.newTeam, 
           ...prev.filter((t) => t.id !== route.params.newTeam.id),
         ]);
       } else if (route.params?.updatedTeam) {

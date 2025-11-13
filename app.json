@@ -1,7 +1,9 @@
 {
   "expo": {
     "name": "ScoorBoard",
-    "slug": "my-app",
+    "slug": "sportsynz",
+    "scheme": "com.sportsynz.app",
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,7 +16,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.amitexpo1021.myapp",
+      "bundleIdentifier": "com.Amitexpo1021.sportsynz",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload pictures.",
         "NSCameraUsageDescription": "We need access to your camera so you can take pictures.",
@@ -23,7 +25,7 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
-      "package": "com.amitexpo1021.myapp",
+      "package": "com.Amitexpo1021.sportsynz",
       "adaptiveIcon": {
         "permissions": [
           "INTERNET",
@@ -42,13 +44,24 @@
       "permissions": [
         "android.permission.RECORD_AUDIO",
         "android.permission.RECORD_AUDIO"
-      ],
-      "package": "com.amitexpo1021.myapp"
+      ]
     },
     "web": {
       "favicon": "./assets/appLogo.svg"
     },
-    "plugins": ["expo-font", "expo-image-picker", "expo-web-browser"],
+    "plugins": [
+      "expo-font",
+      "expo-image-picker",
+      "expo-web-browser",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "webClientId": "YOUR_WEB_CLIENT_ID.apps.googleusercontent.com",
+
+          "iosUrlScheme": "com.googleusercontent.apps.366532913009-mh6u0mfn9jvfqcp72me1a5v7l2ut2dhm"
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "d89df8bc-e8e5-419b-9135-7ccf83a64cee"

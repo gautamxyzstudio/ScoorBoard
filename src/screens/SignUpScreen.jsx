@@ -7,7 +7,6 @@ import {
   Alert,
   Image,
   ActivityIndicator,
-  Platform,
 } from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import CustomInput from "../components/CustomInput";
@@ -20,7 +19,6 @@ import backgroundImg from "../../assets/Vectorbg.png";
 import { registerUser, checkEmailExists } from "../api/auth";
 import { KeyboardAwareScrollView } from "@pietile-native-kit/keyboard-aware-scrollview";
 
-// Google Auth imports
 import * as WebBrowser from "expo-web-browser";
 import * as Google from "expo-auth-session/providers/google";
 import * as AuthSession from "expo-auth-session";
@@ -30,51 +28,76 @@ WebBrowser.maybeCompleteAuthSession();
 const SignUpScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
-  // Generate redirect URI for Expo Go / standalone
-  const redirectUri = AuthSession.makeRedirectUri({
-    useProxy: Platform.OS === "web",  
-    scheme: "com.amitsingh.sportsynz", // iOS Bundle ID / Android package
-  });
-  console.log("Redirect URI:", redirectUri);
+  // //  FIXED REDIRECT URI
+  // const redirectUri = AuthSession.makeRedirectUri({
+  //   useProxy: true,
+  // });
 
-  // Google Auth setup for Web, Android, iOS
+  // console.log("Redirect URI:", redirectUri);
+
+  // // FIXED GOOGLE AUTH REQUEST
+  // const [request, response, promptAsync] = Google.useAuthRequest({
+  //   webClientId:
+  //     "366532913009-tr1k7nd6jc8b9m1qtcpq0a6c4itm7j95.apps.googleusercontent.com",
+  //   androidClientId:
+  //     "366532913009-lp7248tbhomjr0g84l37ubkli95fbc12.apps.googleusercontent.com",
+  //   iosClientId:
+  //     "366532913009-mh6u0mfn9jvfqcp72me1a5v7l2ut2dhm.apps.googleusercontent.com",
+  //   redirectUri,
+  //   scopes: ["profile", "email"],
+  // });
+
+  // // Fetch user info from Google
+  // const getUserInfo = async (token) => {
+  //   try {
+  //     const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
+  //       headers: { Authorization: `Bearer ${token}` },
+  //     });
+  //     const user = await res.json();
+  //     console.log("Google User:", user);
+  //     return user;
+  //   } catch (err) {
+  //     console.error("Failed to fetch user info:", err);
+  //   }
+  // };
+
+  // //  Handle Google login success
+  // useEffect(() => {
+  //   const handleGoogleResponse = async () => {
+  //     if (response?.type === "success") {
+  //       const { authentication } = response;
+  //       const user = await getUserInfo(authentication.accessToken);
+  //       if (user?.email) {
+  //         Alert.alert("Success", `Welcome ${user.name}!`);
+  //         navigation.replace("SelectSport");
+  //       }
+  //     } else if (response?.type === "error") {
+  //       console.error("Google Auth Error:", response.error);
+  //     }
+  //   };
+  //   handleGoogleResponse();
+  // }, [response]);
+  const redirectUri = AuthSession.makeRedirectUri({
+    useProxy: true,
+  });
+
+  console.log("Redirect   URI:", redirectUri);
+
   const [request, response, promptAsync] = Google.useAuthRequest({
     webClientId:
-      "366532913009-tr1k7nd6jc8b9m1qtcpq0a6c4itm7j95.apps.googleusercontent.com",  
+      "366532913009-tr1k7nd6jc8b9m1qtcpq0a6c4itm7j95.apps.googleusercontent.com",
     androidClientId:
-      "366532913009-lp7248tbhomjr0g84l37ubkli95fbc12.apps.googleusercontent.com",  
+      "366532913009-lp7248tbhomjr0g84l37ubkli95fbc12.apps.googleusercontent.com",
     iosClientId:
-      "366532913009-mh6u0mfn9jvfqcp72me1a5v7l2ut2dhm.apps.googleusercontent.com",  
+      "366532913009-mh6u0mfn9jvfqcp72me1a5v7l2ut2dhm.apps.googleusercontent.com",
     redirectUri,
     scopes: ["profile", "email"],
-    useProxy: Platform.OS !== "android" && Platform.OS !== "ios" ? true : false,
   });
 
-  const getUserInfo = async (token) => {
-    try {
-      const res = await fetch("https://www.googleapis.com/userinfo/v2/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const user = await res.json();
-      console.log("👤 Google User:", user);
-      return user;
-    } catch (err) {
-      console.error("Failed to fetch user info:", err);
-    }
-  };
-
   useEffect(() => {
-    const handleGoogleResponse = async () => {
-      if (response?.type === "success") {
-        const { authentication } = response;
-        const user = await getUserInfo(authentication.accessToken);
-        if (user?.email) {
-          Alert.alert("Success", `Welcome ${user.name}!`);
-          navigation.replace("SelectSport");
-        }
-      }
-    };
-    handleGoogleResponse();
+    if (response?.type === "success") {
+      console.log("Access Token:", response.authentication.accessToken);
+    }
   }, [response]);
 
   const {
@@ -185,14 +208,24 @@ const SignUpScreen = ({ navigation }) => {
         <Controller
           control={control}
           name="phone"
-          rules={{ required: "Phone number is required" }}
+          rules={{
+            required: "Phone number is required",
+            pattern: {
+              value: /^[0-9]{10}$/,
+              message: "Phone number must be exactly 10 digits",
+            },
+          }}
           render={({ field: { onChange, value } }) => (
             <CustomInput
               label="Phone Number"
               value={value}
-              onChangeText={onChange}
+              onChangeText={(text) => {
+                const cleaned = text.replace(/[^0-9]/g, "");
+                onChange(cleaned);
+              }}
               keyboardType="phone-pad"
               editable={!loading}
+              maxLength={10}
             />
           )}
         />
@@ -239,7 +272,7 @@ const SignUpScreen = ({ navigation }) => {
         {/* Google Sign-In */}
         <TouchableOpacity
           style={[styles.googleButton, loading && { opacity: 0.5 }]}
-          disabled={loading}
+          disabled={!request}
           onPress={() => promptAsync()}
         >
           <Image source={GoogleIcon} style={styles.googleIcon} />
@@ -266,7 +299,6 @@ const SignUpScreen = ({ navigation }) => {
   );
 };
 
-// Styles unchanged
 const styles = StyleSheet.create({
   backgroundTop: {
     position: "absolute",
